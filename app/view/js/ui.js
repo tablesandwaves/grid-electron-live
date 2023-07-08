@@ -3,6 +3,8 @@ let previousStep = 15;
 
 window.stepSequencer.transport((event, currentStep) => updateTransport(currentStep));
 window.stepSequencer.setRhythmDisplay((event, rhythm) => updateRhythm(rhythm));
+window.stepSequencer.setActiveTrack((event, track) => updateTrack(track));
+window.stepSequencer.setMelodyDisplay((event, melody) => updateMelody(melody));
 
 
 const updateTransport = (currentStep) => {
@@ -20,4 +22,16 @@ const updateRhythm = (rhythm) => {
       document.querySelector(`#sequencer-steps .step-${i} span`).classList.add("on");
     }
   });
+}
+
+
+const updateMelody = (melody) => {
+  document.querySelector("#track-melody span").textContent = melody.join(" ");
+}
+
+
+const updateTrack = (track) => {
+  document.querySelector("#track-name span").textContent = track.name;
+  updateRhythm(track.rhythm);
+  updateMelody(track.melody);
 }

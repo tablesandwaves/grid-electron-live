@@ -11,6 +11,8 @@ const blank16x1Row = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 class MonomeGrid {
   device = undefined;
   daw = undefined;
+  melodyRecording = 0;
+  queuedMelody = new Array();
 
 
   constructor(abletonLive) {
@@ -49,10 +51,67 @@ class MonomeGrid {
 
 
   keyPress(press) {
-    console.log(press);
-    if (press.y == 0 && press.s == 1) {
-      this.daw.track.updateRhythm(press.x);
+
+    // Ignore button releases
+    if (press.s == 0) return;
+
+    if (press.y == 0) {
+
+      // Row 1 (Row Index 0): Update the rhythm for the active track
+      this.daw.getActiveTrack().updateRhythm(press.x);
+
+    } else if (press.y == 7 && press.x >= 0 && press.x <= 3) {
+
+      // Row 8 (Row Index 7), Buttons 1-4: select active track
+      this.#activateTrack(press.x);
+
+    } else if (press.y == 7 && press.x == 14) {
+
+      // Flush Melody to Live
+      if (this.queuedMelody.length > 0) {
+        this.daw.getActiveTrack().setMelody(this.queuedMelody);
+      }
+
+    } else if (press.y == 7 && press.x == 15) {
+
+      // Toggle Melody Recording Mode
+      this.melodyRecording = !this.melodyRecording;
+      this.levelSet(15, 7, this.melodyRecording ? 10 : 0);
+
+      if (this.melodyRecording) this.queuedMelody = new Array();
+
+    } else if (press.y >= 1 && press.y <= 6 && press.x <= 11) {
+
+      // Rows 2-7, Buttons 1-12: Chromatic Keyboard
+      if (this.melodyRecording) {
+        // Store the current key press in the currently accumulating melody as a number pair:
+        // press.x = MIDI note index within a single octave (e.g., C = 0, C# = 1...)
+        // press.y = MIDI octave number, oriented so Row 1 (highest vertically on grid) is octave 6
+        //           and Row 7 (lowest vertically on the grid) is octave 1
+        this.queuedMelody.push([press.x, 6 - press.y + 1]);
+      }
     }
+  }
+
+
+  #activateTrack(trackIndex) {
+    // First, turn off the button for the current track, then turn on the button for the newly selected track
+    this.levelSet(this.daw.activeTrack, 7, 0);
+    this.levelSet(trackIndex, 7, 10);
+
+    // Then, activate the track and refresh the grid and UI displays
+    this.daw.activeTrack = trackIndex;
+    this.displayTransport();
+    this.daw.electronUi.webContents.send(
+      "update-track",
+      // Note that due to the Electron security model, the AbletonTrack object cannot be serialized. Creating
+      // a simple object that is passed thru the context bridge.
+      {
+        name: this.daw.getActiveTrack().name,
+        rhythm: this.daw.getActiveTrack().rhythm,
+        melody: this.daw.getActiveTrack().displayMelody
+      }
+    );
   }
 
 
@@ -65,11 +124,16 @@ class MonomeGrid {
 
 
   displayTransport(highlightIndex) {
-    let row = this.daw.track.rhythm.map(step => step == 1 ? 10 : 0);
+    let row = this.daw.getActiveTrack().rhythm.map(step => step == 1 ? 10 : 0);
     if (highlightIndex != undefined) row[highlightIndex] = 15;
 
     this.levelRow(0, 0, row.slice(0, 8));
     this.levelRow(8, 0, row.slice(8, 16));
+  }
+
+
+  levelSet(x, y, s) {
+    this.device.levelSet(x, y, s);
   }
 
 

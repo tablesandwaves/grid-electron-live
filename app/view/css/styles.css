@@ -11,7 +11,8 @@ div.wrapper {
 }
 
 
-div#sequencer-steps {
+div#sequencer-steps,
+div#current-track {
   width: 800px;
   margin: auto 10px;
 }
@@ -49,4 +50,9 @@ div#sequencer-steps div span {
 
 div#sequencer-steps div span.on {
   background-color: #333;
+}
+
+
+div#current-track span {
+  font-weight: bold;
 }

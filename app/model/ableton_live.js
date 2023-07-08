@@ -12,8 +12,10 @@ class AbletonLive {
   electronUi = undefined;
   // this instance variable is set to a MonomeGrid object and provides the communication channel to the hardware
   controller = undefined;
-  // Store the track
-  track = undefined;
+  // Store the tracks
+  tracks = new Array();
+  // Keep track of the active track
+  activeTrack = 0;
   // 16n step count
   step = 0;
 
@@ -29,7 +31,14 @@ class AbletonLive {
     this.emitter = new OscEmitter();
     this.emitter.add("localhost", 44444);
 
-    this.track = new AbletonTrack(this);
+    ["Kick", "Snare", "HiHat", "Bass"].forEach(trackName => {
+      this.tracks.push( new AbletonTrack(trackName, this) );
+    });
+  }
+
+
+  getActiveTrack() {
+    return this.tracks[this.activeTrack];
   }
 
 
@@ -44,12 +53,6 @@ class AbletonLive {
       this.ticks++;
       // 6 MIDI clock ticks equals a 16th note.
       if (this.ticks % 6 != 0) return;
-
-      // console.log(
-      //   "Bar: " + (Math.floor(this.step / 16) + 1) +
-      //   " Beat: " + (Math.floor(this.step / 4) % 4 + 1) +
-      //   " 16th Note: " + (this.step % this.superMeasure + 1)
-      // );
 
       this.electronUi.webContents.send("transport", this.step % 16);
       this.controller.displayTransport(this.step % 16);
@@ -69,13 +72,12 @@ class AbletonLive {
 
 
   setNotes(track) {
-    const trackIndex = 0;
-    const clipIndex  = 0;
-    const notes      = track.abletonNotes();
+    const clipIndex = 0;
+    const notes     = track.abletonNotes();
 
     try {
       this.emitter.emit(
-        `/tracks/${trackIndex}/clips/${clipIndex}/notes`,
+        `/tracks/${this.activeTrack}/clips/${clipIndex}/notes`,
         ...notes.flatMap(note => note.toOscNote())
       );
     } catch (e) {

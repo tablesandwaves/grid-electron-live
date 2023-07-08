@@ -30,6 +30,13 @@ app.whenReady().then(() => {
   daw.connectToGrid().then((msg) => {
     console.log(msg);
     daw.follow();
+
+    // The grid needs a moment to be fully ready. Wait half a second, then simulate a key press
+    // to set the grid to the track 1, rhythm page.
+    setTimeout(() => {
+      daw.controller.keyPress({x: 0, y: 7, s: 1});
+      daw.controller.keyPress({x: 6, y: 7, s: 1});
+    }, 500);
   });
 
 }).then(() => {
