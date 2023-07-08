@@ -22,6 +22,7 @@ app.whenReady().then(() => {
 
   daw.connectToGrid().then((msg) => {
     console.log(msg);
+    daw.follow();
   });
 
 }).then(() => {
