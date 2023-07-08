@@ -35,3 +35,18 @@ div#sequencer-steps div.active {
 div#sequencer-steps div.current {
   background-color: #31a1ce; /* green: highlight background color for current transport step */
 }
+
+
+div#sequencer-steps div span {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  background-color: #fff;  /* transparent white: on gate step probability */
+  opacity: 0.4;
+}
+
+
+div#sequencer-steps div span.on {
+  background-color: #333;
+}

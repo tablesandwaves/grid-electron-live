@@ -12,6 +12,7 @@ class MonomeGrid {
   device = undefined;
   daw = undefined;
 
+
   constructor(abletonLive) {
     this.daw = abletonLive;
   }
@@ -49,6 +50,9 @@ class MonomeGrid {
 
   keyPress(press) {
     console.log(press);
+    if (press.y == 0 && press.s == 1) {
+      this.daw.track.updateRhythm(press.x);
+    }
   }
 
 
@@ -61,7 +65,7 @@ class MonomeGrid {
 
 
   displayTransport(highlightIndex) {
-    let row = new Array(16).fill(0);
+    let row = this.daw.track.rhythm.map(step => step == 1 ? 10 : 0);
     if (highlightIndex != undefined) row[highlightIndex] = 15;
 
     this.levelRow(0, 0, row.slice(0, 8));
