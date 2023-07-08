@@ -90,6 +90,13 @@ class MonomeGrid {
         //           and Row 7 (lowest vertically on the grid) is octave 1
         this.queuedMelody.push([press.x, 6 - press.y + 1]);
       }
+
+    } else if (press.y == 6 && press.x == 15) {
+
+      // Toggle self-replicating melody algorithm
+      this.daw.getActiveTrack().selfReplicatingMelody = !this.daw.getActiveTrack().selfReplicatingMelody;
+      this.levelSet(press.x, press.y, this.daw.getActiveTrack().selfReplicatingMelody ? 10 : 0);
+
     }
   }
 
@@ -101,6 +108,7 @@ class MonomeGrid {
 
     // Then, activate the track and refresh the grid and UI displays
     this.daw.activeTrack = trackIndex;
+    this.levelSet(15, 6, this.daw.getActiveTrack().selfReplicatingMelody ? 10 : 0);
     this.displayTransport();
     this.daw.electronUi.webContents.send(
       "update-track",
@@ -109,7 +117,8 @@ class MonomeGrid {
       {
         name: this.daw.getActiveTrack().name,
         rhythm: this.daw.getActiveTrack().rhythm,
-        melody: this.daw.getActiveTrack().displayMelody
+        melody: this.daw.getActiveTrack().displayMelody,
+        melodyType: this.daw.getActiveTrack().selfReplicatingMelody ? "Self-replicating" : "Simple"
       }
     );
   }

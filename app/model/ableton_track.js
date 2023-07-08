@@ -1,4 +1,5 @@
 const AbletonNote = require("./ableton_note");
+const algorithms  = require("../helpers/algorithms");
 
 
 const noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -10,6 +11,7 @@ class AbletonTrack {
   rhythm = [0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0];
   melody = [60];
   displayMelody = ["C4"];
+  selfReplicatingMelody = false;
 
 
   constructor(name, abletonLive) {
@@ -42,20 +44,24 @@ class AbletonTrack {
     this.daw.setNotes(this);
 
     // Update the Electron UI display
-    this.daw.electronUi.webContents.send("update-melody", this.displayMelody);
-
+    this.daw.electronUi.webContents.send(
+      "update-melody",
+      this.displayMelody,
+      this.selfReplicatingMelody ? "Self-replicating" : "Simple"
+    );
   }
 
 
   abletonNotes() {
-    const notes = new Array();
-    let melodyIndex = 0;
+    const melody = this.selfReplicatingMelody ? algorithms.selfReplicate(this.melody) : this.melody;
+    const notes  = new Array();
 
+    let melodyIndex = 0;
     for (let i = 0; i < this.daw.superMeasure; i++) {
       const measureOffset = i * 4;
       this.rhythm.forEach((step, i) => {
         if (step == 1) {
-          let midiNoteNumber = this.melody[melodyIndex % this.melody.length];
+          let midiNoteNumber = melody[melodyIndex % melody.length];
           melodyIndex++;
 
           notes.push( new AbletonNote(midiNoteNumber, ((i * 0.25) + measureOffset), 0.25, 64) )

@@ -4,7 +4,7 @@ let previousStep = 15;
 window.stepSequencer.transport((event, currentStep) => updateTransport(currentStep));
 window.stepSequencer.setRhythmDisplay((event, rhythm) => updateRhythm(rhythm));
 window.stepSequencer.setActiveTrack((event, track) => updateTrack(track));
-window.stepSequencer.setMelodyDisplay((event, melody) => updateMelody(melody));
+window.stepSequencer.setMelodyDisplay((event, melody, melodyType) => updateMelody(melody, melodyType));
 
 
 const updateTransport = (currentStep) => {
@@ -25,13 +25,14 @@ const updateRhythm = (rhythm) => {
 }
 
 
-const updateMelody = (melody) => {
+const updateMelody = (melody, melodyType) => {
   document.querySelector("#track-melody span").textContent = melody.join(" ");
+  document.querySelector("#melody-type span").textContent  = melodyType;
 }
 
 
 const updateTrack = (track) => {
   document.querySelector("#track-name span").textContent = track.name;
   updateRhythm(track.rhythm);
-  updateMelody(track.melody);
+  updateMelody(track.melody, track.melodyType);
 }
