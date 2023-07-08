@@ -5,6 +5,7 @@ const serialosc = require("serialosc");
 
 
 const CONFIG_DIRECTORY = path.resolve(__dirname, "../../config");
+const blank16x1Row = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 
 class MonomeGrid {
@@ -48,6 +49,28 @@ class MonomeGrid {
 
   keyPress(press) {
     console.log(press);
+  }
+
+
+  clearGridDisplay(rowCount = 7) {
+    for (let y = 0; y < rowCount; y++) {
+      this.levelRow(0, y, blank16x1Row.slice(0, 8));
+      this.levelRow(8, y, blank16x1Row.slice(8, 16));
+    }
+  }
+
+
+  displayTransport(highlightIndex) {
+    let row = new Array(16).fill(0);
+    if (highlightIndex != undefined) row[highlightIndex] = 15;
+
+    this.levelRow(0, 0, row.slice(0, 8));
+    this.levelRow(8, 0, row.slice(8, 16));
+  }
+
+
+  levelRow(xOffset, y, row) {
+    this.device.levelRow(xOffset, y, row);
   }
 }
 

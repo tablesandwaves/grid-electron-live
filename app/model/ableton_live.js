@@ -3,6 +3,11 @@ const MonomeGrid = require("./monome_grid");
 
 
 class AbletonLive {
+  // this instance variable is set to an Electron BrowserWindow object and provides the communication channel
+  // for updating the UI
+  electronUi = undefined;
+  // this instance variable is set to a MonomeGrid object and provides the communication channel to the hardware
+  controller = undefined;
   // For a sequencer with a 16th note pulse, 4 measures will be one "super measure" to enable a 64 step sequence
   superMeasure = 4;
   // 16n step count
@@ -27,12 +32,8 @@ class AbletonLive {
       // 6 MIDI clock ticks equals a 16th note.
       if (this.ticks % 6 != 0) return;
 
-      console.log(
-        "Bar: " + (Math.floor(this.step / 16) + 1) +
-        " Beat: " + (Math.floor(this.step / 4) % 4 + 1) +
-        " 16th Note: " + (this.step % this.superMeasure + 1)
-      );
-
+      this.electronUi.webContents.send("transport", this.step % 16);
+      this.controller.displayTransport(this.step % 16);
       this.step = this.step == this.superMeasure * 16 - 1 ? 0 : this.step + 1;
     });
 

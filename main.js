@@ -8,14 +8,21 @@ const daw = new AbletonLive();
 
 function createWindow () {
   const win = new BrowserWindow({
-    width: 800,
+    width: 1500,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   });
 
+  daw.electronUi = win;
+
   win.loadFile('app/view/index.html');
+  win.webContents.openDevTools();
+
+  win.on("closed", () => {
+    daw.controller.clearGridDisplay(8);
+  });
 }
 
 app.whenReady().then(() => {

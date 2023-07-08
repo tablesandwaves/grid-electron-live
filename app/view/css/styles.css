@@ -3,3 +3,35 @@ body {
   position: relative;
   margin: 10px;
 }
+
+
+div.wrapper {
+  position: relative;
+  float: left;
+}
+
+
+div#sequencer-steps {
+  width: 800px;
+  margin: auto 10px;
+}
+
+
+div#sequencer-steps div {
+  width: 40px;
+  height: 40px;
+  margin: 2px;
+  background-color: #fff;  /* dark gray: background color for inactive step */
+  border: 1px solid #333;  /* medium gray: border color for active step */
+}
+
+
+div#sequencer-steps div.active {
+  background-color: #fff;  /* medium gray: background color for active step */
+  border: 1px solid #555;  /* medium-light gray: border color for active step */
+}
+
+
+div#sequencer-steps div.current {
+  background-color: #31a1ce; /* green: highlight background color for current transport step */
+}
