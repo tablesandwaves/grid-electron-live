@@ -21,5 +21,9 @@
   },
   "overrides": {
     "semver": "^7.5.3"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "serialosc": "^1.0.0"
   }
 }

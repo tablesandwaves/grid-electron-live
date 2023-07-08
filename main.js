@@ -1,5 +1,10 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
+const AbletonLive = require('./app/model/ableton_live');
+
+
+const daw = new AbletonLive();
+
 
 function createWindow () {
   const win = new BrowserWindow({
@@ -10,13 +15,19 @@ function createWindow () {
     }
   });
 
-win.loadFile('app/view/index.html')
+  win.loadFile('app/view/index.html');
 }
 
 app.whenReady().then(() => {
+
+  daw.connectToGrid().then((msg) => {
+    console.log(msg);
+  });
+
+}).then(() => {
   createWindow();
 
-app.on('activate', () => {
+  app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
