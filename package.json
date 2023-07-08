@@ -1,0 +1,25 @@
+{
+  "name": "grid-electron-live",
+  "version": "0.1.0",
+  "description": "A reference implementation app that connects a monome grid to Ableton Live",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [
+    "monome",
+    "grid",
+    "electron",
+    "ableton",
+    "live"
+  ],
+  "author": "Tables & Waves",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^25.2.0"
+  },
+  "overrides": {
+    "semver": "^7.5.3"
+  }
+}
