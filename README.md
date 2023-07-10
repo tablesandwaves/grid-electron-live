@@ -22,4 +22,4 @@ Once the app is running for the first time, you will need to configure the "mono
 
 ## License
 
-The gem is available as open source under the terms of the [ISC License](https://opensource.org/license/isc-license-txt/).
+The code is available as open source under the terms of the [ISC License](https://opensource.org/license/isc-license-txt/).
